@@ -3,293 +3,547 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>毛孩飯飯計算機 🐾</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <title>毛孩智能飲食管家 🐾</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #FF9A9E;
+            --primary-dark: #fa7e83;
             --secondary: #FECFEF;
-            --accent: #91C4FF;
+            --accent: #a1c4fd;
             --text: #5D5D5D;
-            --bg: #FFF5F7;
+            --bg: #FFF0F3;
+            --card-bg: #FFFFFF;
         }
 
         body {
             font-family: 'Quicksand', 'Noto Sans TC', sans-serif;
             background-color: var(--bg);
+            background-image: radial-gradient(#ffdde1 1px, transparent 1px);
+            background-size: 20px 20px;
             color: var(--text);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Changed for longer content */
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
         }
 
         .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 30px;
-            box-shadow: 0 10px 25px rgba(255, 154, 158, 0.2);
-            max-width: 400px;
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 35px;
+            box-shadow: 0 15px 35px rgba(255, 154, 158, 0.15);
+            max-width: 480px;
             width: 100%;
-            text-align: center;
-            border: 4px solid white;
+            border: 5px solid white;
             position: relative;
         }
 
         h1 {
+            text-align: center;
             color: var(--primary);
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
             font-size: 1.8rem;
         }
-
-        .icon-header {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            display: block;
-            animation: bounce 2s infinite;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
+        
+        .subtitle {
+            text-align: center;
             font-size: 0.9rem;
-            color: #888;
+            color: #999;
+            margin-bottom: 1.5rem;
         }
 
-        input, select {
+        /* Pet Switcher */
+        .pet-toggle {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 50px;
+            padding: 5px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .pet-toggle input {
+            display: none;
+        }
+
+        .pet-toggle label {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            z-index: 2;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            color: #aaa;
+            border-radius: 50px;
+        }
+
+        .pet-toggle input:checked + label {
+            color: white;
+        }
+
+        .slider {
+            position: absolute;
+            height: calc(100% - 10px);
+            width: calc(50% - 5px);
+            background: var(--primary);
+            border-radius: 50px;
+            top: 5px;
+            left: 5px;
+            transition: 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 1;
+        }
+
+        #cat:checked ~ .slider {
+            transform: translateX(100%);
+            background: var(--accent);
+        }
+
+        /* Forms */
+        .section-title {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        select, input {
             width: 100%;
-            padding: 12px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
             border: 2px solid var(--secondary);
             border-radius: 15px;
             font-size: 1rem;
             font-family: inherit;
-            box-sizing: border-box;
+            background: white;
             transition: 0.3s;
+            box-sizing: border-box;
             outline: none;
+            color: var(--text);
         }
 
-        input:focus, select:focus {
+        select:focus, input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 8px var(--secondary);
+            box-shadow: 0 0 0 3px rgba(255, 154, 158, 0.2);
         }
 
-        button {
-            background: var(--primary);
+        .input-group {
+            position: relative;
+        }
+        
+        .input-suffix {
+            position: absolute;
+            right: 15px;
+            top: 14px;
+            color: #999;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        button.calc-btn {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 16px;
             border-radius: 50px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 1rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+            margin-top: 1.5rem;
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
+            transition: transform 0.2s;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 154, 158, 0.6);
-        }
-
-        button:active {
+        button.calc-btn:active {
             transform: scale(0.98);
         }
 
-        #result {
-            margin-top: 2rem;
-            background: var(--secondary);
-            padding: 1.5rem;
-            border-radius: 20px;
-            display: none; /* 預設隱藏 */
-            animation: fadeIn 0.5s ease;
+        /* Results */
+        #result-card {
+            background: linear-gradient(135deg, #fff5f7 0%, #fff 100%);
+            border: 2px solid var(--secondary);
+            padding: 20px;
+            border-radius: 25px;
+            margin-top: 25px;
+            display: none;
+            animation: slideUp 0.5s ease;
         }
 
-        .result-value {
-            font-size: 2.5rem;
-            font-weight: bold;
+        .main-result {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed var(--secondary);
+            padding-bottom: 15px;
+        }
+
+        .big-number {
+            font-size: 3rem;
+            font-weight: 800;
             color: var(--primary);
-            display: block;
-            margin: 10px 0;
+            line-height: 1;
         }
 
-        .note {
+        .unit {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .meal-plan {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .plan-item {
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .plan-title {
             font-size: 0.8rem;
             color: #999;
-            margin-top: 1rem;
-            line-height: 1.4;
+            margin-bottom: 5px;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .plan-val {
+            font-weight: bold;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        /* Advice Section */
+        .advice-box {
+            margin-top: 25px;
+            background: #F0F7FF;
+            padding: 15px;
+            border-radius: 15px;
+            border-left: 5px solid var(--accent);
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        .advice-title {
+            font-weight: bold;
+            color: #5B86E5;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Toggle Switch for Pet Type */
-        .pet-type-selector {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
+        /* Responsive tweaks */
+        @media (max-width: 400px) {
+            .container { padding: 1.5rem; }
+            .big-number { font-size: 2.5rem; }
         }
-        
-        .radio-label {
-            cursor: pointer;
-            padding: 10px 20px;
-            border: 2px solid var(--secondary);
-            border-radius: 20px;
-            transition: 0.3s;
-            opacity: 0.6;
-        }
-
-        input[type="radio"] {
-            display: none;
-        }
-
-        input[type="radio"]:checked + .radio-label {
-            background: var(--secondary);
-            border-color: var(--primary);
-            opacity: 1;
-            font-weight: bold;
-        }
-
     </style>
 </head>
 <body>
 
     <div class="container">
-        <span class="icon-header">🐾</span>
-        <h1>毛孩飯飯計算機</h1>
+        <h1>毛孩飲食管家 🐾</h1>
+        <p class="subtitle">選擇品種與飼料，一鍵計算建議食量</p>
 
-        <div class="pet-type-selector">
-            <input type="radio" id="dog" name="petType" value="dog" checked onchange="updateOptions()">
-            <label for="dog" class="radio-label">🐶 狗狗</label>
-            
-            <input type="radio" id="cat" name="petType" value="cat" onchange="updateOptions()">
-            <label for="cat" class="radio-label">🐱 貓咪</label>
+        <!-- Pet Switcher -->
+        <div class="pet-toggle">
+            <input type="radio" id="dog" name="petType" value="dog" checked onchange="initData()">
+            <label for="dog">🐶 狗狗</label>
+            <input type="radio" id="cat" name="petType" value="cat" onchange="initData()">
+            <label for="cat">🐱 貓咪</label>
+            <div class="slider"></div>
         </div>
 
-        <div class="form-group">
-            <label>體重 (kg)</label>
-            <input type="number" id="weight" placeholder="例如: 5.2" step="0.1">
-        </div>
-
-        <div class="form-group">
-            <label>毛孩狀態</label>
-            <select id="condition">
-                <!-- Options will be populated by JS -->
+        <!-- Input Fields -->
+        <div>
+            <div class="section-title">🧬 品種 (協助預填體重)</div>
+            <select id="breedSelect" onchange="updateWeightFromBreed()">
+                <option value="">-- 請選擇品種 --</option>
             </select>
+
+            <div class="section-title">⚖️ 體重 (kg)</div>
+            <div class="input-group">
+                <input type="number" id="weight" placeholder="輸入實際體重" step="0.1">
+                <span class="input-suffix">kg</span>
+            </div>
+
+            <div class="section-title">🏃 生活型態</div>
+            <select id="condition">
+                <!-- Populated by JS -->
+            </select>
+
+            <div class="section-title">🥫 選擇飼料品牌</div>
+            <select id="foodBrand" onchange="updateCaloriesFromBrand()">
+                <option value="0">-- 手動輸入或選擇品牌 --</option>
+                <!-- Populated by JS -->
+            </select>
+
+            <div class="section-title">🔥 熱量 (kcal/kg)</div>
+            <div class="input-group">
+                <input type="number" id="calories" placeholder="包裝背面的代謝能(ME)">
+                <span class="input-suffix">kcal/kg</span>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>飼料熱量 (kcal/kg)</label>
-            <input type="number" id="calories" placeholder="看飼料袋背面，約3500-4200">
-            <div style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">*通常標示為 代謝能 或 ME (kcal/kg)</div>
-        </div>
+        <button class="calc-btn" onclick="calculate()">開始計算 ✨</button>
 
-        <button onclick="calculate()">計算每日食量 ✨</button>
+        <!-- Results -->
+        <div id="result-card">
+            <div class="main-result">
+                <div style="margin-bottom:5px; font-size:0.9rem; color:#888;">建議每日總量</div>
+                <span class="big-number" id="totalAmount">0</span>
+                <span class="unit">g (公克)</span>
+                <div style="font-size: 0.8rem; color: var(--primary); margin-top: 5px;" id="totalKcal"></div>
+            </div>
 
-        <div id="result">
-            <div>建議每日攝取</div>
-            <span class="result-value" id="dailyAmount">0</span>
-            <div>公克 (g)</div>
-            <div class="note" id="calorieNote"></div>
+            <div class="meal-plan">
+                <div class="plan-item">
+                    <div class="plan-title">早晚兩餐</div>
+                    <div class="plan-val"><span id="meal2">0</span> g / 餐</div>
+                </div>
+                <div class="plan-item">
+                    <div class="plan-title">少量三餐</div>
+                    <div class="plan-val"><span id="meal3">0</span> g / 餐</div>
+                </div>
+            </div>
+
+            <div class="advice-box">
+                <div class="advice-title">💡 獸醫小叮嚀</div>
+                <div id="adviceText">計算結果僅供參考，請依照毛孩體態(BCS)調整。換飼料請遵循「7日換食法」避免軟便喔！</div>
+            </div>
         </div>
-        
-        <p class="note">⚠️ 僅供參考：實際餵食量請根據毛孩的活動量、體態評分 (BCS) 調整，或諮詢您的獸醫師。</p>
     </div>
 
     <script>
-        const dogOptions = [
-            { val: 1.6, text: "成犬 (已結紮)" },
-            { val: 1.8, text: "成犬 (未結紮)" },
-            { val: 3.0, text: "幼犬 (4個月以下)" },
-            { val: 2.0, text: "幼犬 (4個月~成犬)" },
-            { val: 1.0, text: "減重中 / 老年犬" },
-            { val: 1.2, text: "極低活動量" }
-        ];
+        // --- Data Database ---
+        const data = {
+            dog: {
+                breeds: [
+                    { name: "米克斯 (中型)", weight: 15 },
+                    { name: "貴賓犬 (玩具型)", weight: 3 },
+                    { name: "柴犬", weight: 9 },
+                    { name: "黃金獵犬", weight: 30 },
+                    { name: "拉不拉多", weight: 32 },
+                    { name: "柯基", weight: 12 },
+                    { name: "法鬥", weight: 11 },
+                    { name: "博美", weight: 2.5 },
+                    { name: "吉娃娃", weight: 2 },
+                    { name: "哈士奇", weight: 23 },
+                    { name: "邊境牧羊犬", weight: 18 },
+                    { name: "比熊", weight: 5 }
+                ],
+                conditions: [
+                    { val: 1.6, text: "成犬 (已結紮/一般)" },
+                    { val: 1.8, text: "成犬 (未結紮)" },
+                    { val: 3.0, text: "幼犬 (4個月以下)" },
+                    { val: 2.0, text: "幼犬 (成長中)" },
+                    { val: 1.0, text: "減重中 / 老犬" },
+                    { val: 1.2, text: "活動量極低" },
+                    { val: 2.0, text: "工作犬 / 高活動量" }
+                ],
+                foods: [
+                    { name: "皇家 (Royal Canin) 小型成犬", kcal: 3960 },
+                    { name: "皇家 (Royal Canin) 中型成犬", kcal: 3840 },
+                    { name: "Orijen (渴望) 原味鮮雞", kcal: 3960 },
+                    { name: "Orijen (渴望) 六種魚", kcal: 3860 },
+                    { name: "Hill's (希爾思) 成犬", kcal: 3650 },
+                    { name: "Real Power (瑞威) 1號草原羊", kcal: 4050 },
+                    { name: "ZiwiPeak (巔峰) 羊肉肉乾", kcal: 5600 },
+                    { name: "Acana (愛肯拿) 單一蛋白鴨肉", kcal: 3393 },
+                    { name: "紐頓 (Nutram) T23 火雞", kcal: 3725 }
+                ]
+            },
+            cat: {
+                breeds: [
+                    { name: "米克斯 (一般)", weight: 4.5 },
+                    { name: "美國短毛貓", weight: 5 },
+                    { name: "英國短毛貓", weight: 5.5 },
+                    { name: "布偶貓", weight: 6.5 },
+                    { name: "波斯貓", weight: 4 },
+                    { name: "曼赤肯 (短腿)", weight: 3.5 },
+                    { name: "暹羅貓", weight: 3.5 },
+                    { name: "緬因貓", weight: 7.5 }
+                ],
+                conditions: [
+                    { val: 1.2, text: "成貓 (已結紮/室內)" },
+                    { val: 1.4, text: "成貓 (未結紮/活躍)" },
+                    { val: 2.5, text: "幼貓 (成長中)" },
+                    { val: 0.8, text: "減重中 / 胖胖貓" },
+                    { val: 1.0, text: "老貓 (活動力低)" },
+                    { val: 1.6, text: "懷孕 / 哺乳期" }
+                ],
+                foods: [
+                    { name: "皇家 (Royal Canin) 室內貓", kcal: 3750 },
+                    { name: "皇家 (Royal Canin) 泌尿道配方", kcal: 3870 },
+                    { name: "Orijen (渴望) 鮮雞愛貓", kcal: 4060 },
+                    { name: "Orijen (渴望) 六種魚", kcal: 4060 },
+                    { name: "Real Power (瑞威) 3號海魚", kcal: 4150 },
+                    { name: "Wellness CORE 無穀成貓", kcal: 3977 },
+                    { name: "莫比 (Mobby) 無穀鹿肉", kcal: 3650 },
+                    { name: "紐頓 (Nutram) T22 無穀火雞", kcal: 3820 },
+                    { name: "怪獸部落 98% 鮮肉糧", kcal: 4100 }
+                ]
+            }
+        };
 
-        const catOptions = [
-            { val: 1.2, text: "成貓 (已結紮/室內)" },
-            { val: 1.4, text: "成貓 (未結紮/活躍)" },
-            { val: 2.5, text: "幼貓" },
-            { val: 0.8, text: "減重中" },
-            { val: 1.6, text: "懷孕/哺乳期" }
-        ];
+        // --- Advice Database ---
+        const adviceList = {
+            dog: [
+                "換飼料請遵守「7日換食法」，每天增加一點新飼料，避免腸胃不適。",
+                "零食熱量不應超過每日總熱量的 10%，記得要從正餐扣除喔！",
+                "夏天散步請避開正中午，柏油路溫度過高可能會燙傷腳底。",
+                "除了乾飼料，記得隨時提供乾淨的飲水。"
+            ],
+            cat: [
+                "貓咪不愛喝水嗎？可以嘗試流動式飲水機，或偶爾搭配主食罐騙水喝。",
+                "貓咪是肉食性動物，請盡量避免碳水化合物過高的零食。",
+                "減重不能太快！貓咪如果餓太久容易有脂肪肝風險，請循序漸進。",
+                "乾飼料開封後建議密封保存，並在一個月內吃完以免受潮氧化。"
+            ]
+        };
 
-        function updateOptions() {
-            const isDog = document.getElementById('dog').checked;
-            const select = document.getElementById('condition');
-            const options = isDog ? dogOptions : catOptions;
-            
-            select.innerHTML = '';
-            options.forEach(opt => {
-                const el = document.createElement('option');
-                el.value = opt.val;
-                el.innerText = opt.text;
-                select.appendChild(el);
+        // --- Functions ---
+        
+        function initData() {
+            const type = document.querySelector('input[name="petType"]:checked').value;
+            const currentData = data[type];
+
+            // Populate Breeds
+            const breedSelect = document.getElementById('breedSelect');
+            breedSelect.innerHTML = '<option value="">-- 請選擇品種 (參考體重) --</option>';
+            currentData.breeds.forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b.weight;
+                opt.text = `${b.name} (約${b.weight}kg)`;
+                breedSelect.appendChild(opt);
             });
+
+            // Populate Conditions
+            const condSelect = document.getElementById('condition');
+            condSelect.innerHTML = '';
+            currentData.conditions.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.val;
+                opt.text = c.text;
+                condSelect.appendChild(opt);
+            });
+
+            // Populate Food Brands
+            const foodSelect = document.getElementById('foodBrand');
+            foodSelect.innerHTML = '<option value="0">-- 手動輸入或選擇品牌 --</option>';
+            currentData.foods.forEach(f => {
+                const opt = document.createElement('option');
+                opt.value = f.kcal;
+                opt.text = f.name;
+                foodSelect.appendChild(opt);
+            });
+
+            // Change Theme Colors slightly based on pet
+            const root = document.documentElement;
+            if (type === 'cat') {
+                root.style.setProperty('--primary', '#a1c4fd'); // Blueish for cats
+                root.style.setProperty('--primary-dark', '#80aefc');
+                root.style.setProperty('--secondary', '#e2ebf0');
+                root.style.setProperty('--bg', '#f0f7ff');
+                root.style.setProperty('--accent', '#FF9A9E');
+            } else {
+                root.style.setProperty('--primary', '#FF9A9E'); // Pinkish for dogs
+                root.style.setProperty('--primary-dark', '#fa7e83');
+                root.style.setProperty('--secondary', '#FECFEF');
+                root.style.setProperty('--bg', '#FFF0F3');
+                root.style.setProperty('--accent', '#a1c4fd');
+            }
+        }
+
+        function updateWeightFromBreed() {
+            const weight = document.getElementById('breedSelect').value;
+            if (weight) {
+                document.getElementById('weight').value = weight;
+                // Animation effect
+                const input = document.getElementById('weight');
+                input.style.transform = "scale(1.05)";
+                setTimeout(() => input.style.transform = "scale(1)", 200);
+            }
+        }
+
+        function updateCaloriesFromBrand() {
+            const kcal = document.getElementById('foodBrand').value;
+            if (kcal != "0") {
+                document.getElementById('calories').value = kcal;
+                const input = document.getElementById('calories');
+                input.style.transform = "scale(1.05)";
+                setTimeout(() => input.style.transform = "scale(1)", 200);
+            }
         }
 
         function calculate() {
             const weight = parseFloat(document.getElementById('weight').value);
-            const multiplier = parseFloat(document.getElementById('condition').value);
-            const foodKcal = parseFloat(document.getElementById('calories').value);
-            
-            if (!weight || !foodKcal) {
-                alert("請輸入完整的體重和飼料熱量喔！🦴");
+            const factor = parseFloat(document.getElementById('condition').value);
+            const kcal = parseFloat(document.getElementById('calories').value);
+            const type = document.querySelector('input[name="petType"]:checked').value;
+
+            if (!weight || !kcal) {
+                alert("請輸入體重與熱量資訊喔！🐾");
                 return;
             }
 
-            // RER Calculation: 70 * (weight ^ 0.75)
+            // RER Formula
             const rer = 70 * Math.pow(weight, 0.75);
+            const der = rer * factor; // Daily Energy Requirement
             
-            // DER Calculation
-            const der = rer * multiplier;
+            // Daily Grams
+            const totalGrams = (der / kcal) * 1000;
 
-            // Grams of food per day
-            const grams = (der / foodKcal) * 1000;
+            // Update UI
+            document.getElementById('result-card').style.display = 'block';
+            
+            // Animate Numbers
+            animateValue('totalAmount', 0, Math.round(totalGrams), 800);
+            document.getElementById('meal2').innerText = Math.round(totalGrams / 2);
+            document.getElementById('meal3').innerText = Math.round(totalGrams / 3);
+            document.getElementById('totalKcal').innerText = `每日所需熱量：約 ${Math.round(der)} kcal`;
 
-            // Display
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            
-            // Count up animation
-            let current = 0;
-            const target = Math.round(grams);
-            const duration = 800; // ms
-            const stepTime = 20;
-            const steps = duration / stepTime;
-            const increment = target / steps;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
+            // Random Advice
+            const adviceArray = adviceList[type];
+            const randomAdvice = adviceArray[Math.floor(Math.random() * adviceArray.length)];
+            document.getElementById('adviceText').innerText = randomAdvice;
+
+            // Scroll to result
+            document.getElementById('result-card').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
                 }
-                document.getElementById('dailyAmount').innerText = Math.round(current);
-            }, stepTime);
-
-            document.getElementById('calorieNote').innerText = `每日所需熱量約: ${Math.round(der)} kcal`;
+            };
+            window.requestAnimationFrame(step);
         }
 
         // Initialize
-        updateOptions();
+        initData();
     </script>
 </body>
 </html>
