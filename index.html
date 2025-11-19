@@ -3,27 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>毛孩智能飲食管家 (Q版動畫版) 🐾</title>
+    <title>毛孩飲食管家🐾</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #FF9A9E;
-            --primary-dark: #fa7e83;
             --secondary: #FECFEF;
             --accent: #a1c4fd;
             --text: #5D5D5D;
             --bg: #FFF0F3;
-            --card-bg: #FFFFFF;
         }
 
         body {
             font-family: 'Quicksand', 'Noto Sans TC', sans-serif;
             background-color: var(--bg);
-            background-image: 
-                radial-gradient(var(--secondary) 20%, transparent 20%),
-                radial-gradient(var(--secondary) 20%, transparent 20%);
-            background-position: 0 0, 10px 10px;
-            background-size: 20px 20px;
             color: var(--text);
             min-height: 100vh;
             margin: 0;
@@ -31,19 +24,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden; /* Prevent scrollbar from walking animation */
+            overflow-x: hidden;
         }
 
         .container {
-            background: var(--card-bg);
+            background: white;
             padding: 2rem;
-            border-radius: 35px;
-            box-shadow: 0 15px 35px rgba(255, 154, 158, 0.2);
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             max-width: 500px;
             width: 100%;
             border: 6px solid white;
             position: relative;
-            z-index: 10;
         }
 
         h1 {
@@ -51,142 +43,100 @@
             color: var(--primary);
             margin: 0 0 0.5rem 0;
             font-size: 1.8rem;
-            text-shadow: 2px 2px 0px var(--secondary);
         }
         
-        .subtitle {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #999;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Q-Version Image Area */
-        .pet-image-frame {
-            width: 160px;
-            height: 160px;
-            margin: 0 auto 20px auto;
+        /* --- 繪圖顯示區 --- */
+        .pet-display-area {
+            width: 180px;
+            height: 180px;
+            margin: 10px auto 20px auto;
+            background: var(--secondary);
             border-radius: 50%;
-            background: white;
-            border: 5px dashed var(--primary);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border: 5px solid white;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.1);
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
+            position: relative;
             transition: 0.3s;
         }
 
-        .pet-image-frame:hover {
-            transform: rotate(5deg) scale(1.05);
-            border-style: solid;
+        .pet-display-area:hover {
+            transform: scale(1.05);
         }
 
-        #petImage {
-            width: 90%;
-            height: 90%;
-            object-fit: contain;
-            display: none;
-            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+        /* SVG Styles */
+        svg.pet-svg {
+            width: 140px;
+            height: 140px;
+            transition: 0.3s;
+            filter: drop-shadow(2px 4px 0px rgba(0,0,0,0.1));
         }
 
-        .default-emoji {
-            font-size: 5rem;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        /* Toggle Switch */
+        /* --- 表單與按鈕 --- */
         .pet-toggle {
             display: flex;
             background: #f0f0f0;
             border-radius: 50px;
             padding: 5px;
             margin-bottom: 20px;
-            position: relative;
         }
-
-        .pet-toggle input { display: none; }
 
         .pet-toggle label {
             flex: 1;
             text-align: center;
             padding: 10px;
-            z-index: 2;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
             color: #aaa;
             border-radius: 50px;
+            z-index: 2;
+            transition: 0.3s;
         }
+        
+        .pet-toggle input { display: none; }
+        .pet-toggle input:checked + label { color: white; background: var(--primary); box-shadow: 0 4px 10px rgba(255,154,158,0.4); }
 
-        .pet-toggle input:checked + label { color: white; }
-
-        .slider {
-            position: absolute;
-            height: calc(100% - 10px);
-            width: calc(50% - 5px);
-            background: var(--primary);
-            border-radius: 50px;
-            top: 5px;
-            left: 5px;
-            transition: 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            z-index: 1;
-        }
-
-        #cat:checked ~ .slider {
-            transform: translateX(100%);
-            background: var(--accent);
-        }
-
-        /* Inputs */
         .section-title {
             font-size: 0.9rem;
             color: var(--primary);
             font-weight: bold;
-            margin-top: 15px;
+            margin-top: 12px;
             margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
         select, input {
             width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            border: 2px solid var(--secondary);
-            border-radius: 20px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 2px solid #eee;
+            border-radius: 15px;
             font-size: 1rem;
-            background: white;
             outline: none;
             box-sizing: border-box;
         }
 
-        select:focus, input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(255, 154, 158, 0.15);
-        }
+        select:focus, input:focus { border-color: var(--primary); }
 
         button.calc-btn {
-            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 16px;
+            padding: 15px;
             border-radius: 50px;
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
             margin-top: 1.5rem;
-            box-shadow: 0 6px 20px rgba(255, 154, 158, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
             transition: transform 0.2s;
         }
-
-        button.calc-btn:hover { transform: translateY(-2px); }
+        
         button.calc-btn:active { transform: scale(0.95); }
 
-        /* Result Card */
+        /* --- 結果區與動畫 --- */
         #result-card {
             background: #fff;
             border: 3px dashed var(--secondary);
@@ -194,374 +144,357 @@
             border-radius: 25px;
             margin-top: 25px;
             display: none;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .big-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary);
+            animation: popIn 0.5s ease;
         }
 
         .meal-plan {
             display: flex;
             gap: 10px;
             margin-top: 15px;
-        }
-
-        .plan-item {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 15px;
-            flex: 1;
             text-align: center;
-            border: 1px solid #eee;
         }
+        .plan-item { flex: 1; background: #f9f9f9; padding: 10px; border-radius: 10px; }
 
-        /* --- Walking Animation Area --- */
-        .runway-container {
+        /* 走路動畫軌道 */
+        .runway {
             margin-top: 20px;
             height: 80px;
-            position: relative;
             border-bottom: 2px solid #eee;
+            position: relative;
             overflow: hidden;
         }
 
-        .walking-pet {
+        .walker {
             width: 60px;
             height: 60px;
             position: absolute;
             bottom: 0;
-            left: -60px; /* Start outside */
-            /* Combining walk across + bounce */
-            animation: walkAcross 6s linear infinite, bounce 0.4s ease-in-out infinite alternate;
+            left: -70px;
+            animation: walk 5s linear infinite, bounce 0.3s ease-in-out infinite alternate;
         }
-        
-        .walking-pet img {
+
+        .walker svg {
             width: 100%;
             height: 100%;
-            object-fit: contain;
         }
 
-        /* Keyframes */
-        @keyframes walkAcross {
-            0% { left: -10%; transform: scaleX(1); }
-            45% { left: 110%; transform: scaleX(1); }
-            /* Flip and walk back? simpler to just loop one way for endless walking */
-            100% { left: 110%; transform: scaleX(1); } 
+        @keyframes walk {
+            0% { left: -20%; }
+            100% { left: 120%; }
         }
-
         @keyframes bounce {
-            from { transform: translateY(0) rotate(-2deg); }
-            to { transform: translateY(-10px) rotate(2deg); }
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
         }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
         @keyframes popIn {
-            from { opacity: 0; transform: scale(0.8); }
+            from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Responsive */
-        @media (max-width: 400px) {
-            .container { padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>✨ Q版毛孩飲食管家</h1>
-        <p class="subtitle">AI 風格可愛圖像 + 走路動畫計算機</p>
+        <h1>🎨 毛孩畫家計算機</h1>
 
-        <!-- Cute Image Frame -->
-        <div class="pet-image-frame">
-            <div id="defaultEmoji" class="default-emoji">🐶</div>
-            <img id="petImage" src="" alt="Cute Pet">
+        <!-- 繪圖顯示區 -->
+        <div class="pet-display-area" id="displayArea">
+            <!-- SVG 將會被注入這裡 -->
+            <div style="font-size:3rem; opacity:0.3;">🐾</div>
         </div>
 
-        <!-- Switcher -->
         <div class="pet-toggle">
             <input type="radio" id="dog" name="petType" value="dog" checked onchange="initData()">
             <label for="dog">🐶 狗狗</label>
             <input type="radio" id="cat" name="petType" value="cat" onchange="initData()">
             <label for="cat">🐱 貓咪</label>
-            <div class="slider"></div>
         </div>
 
-        <!-- Inputs -->
+        <!-- 輸入區 -->
         <div>
-            <div class="section-title">🎨 選擇品種 (顯示Q版圖)</div>
-            <select id="breedSelect" onchange="updateBreedInfo()">
-                <option value="">-- 請選擇 --</option>
-            </select>
+            <div class="section-title">🎨 品種 (會變身喔!)</div>
+            <select id="breedSelect" onchange="updateBreed()"></select>
 
             <div class="section-title">⚖️ 體重 (kg)</div>
-            <input type="number" id="weight" placeholder="自動帶入參考體重" step="0.1">
+            <input type="number" id="weight" step="0.1">
 
             <div class="section-title">🏃 生活型態</div>
             <select id="condition"></select>
 
             <div class="section-title">🥫 飼料品牌</div>
-            <select id="foodBrand" onchange="updateCaloriesFromBrand()">
-                <option value="0">-- 手動輸入或選擇 --</option>
-            </select>
+            <select id="foodBrand" onchange="updateCalories()"></select>
 
             <div class="section-title">🔥 熱量 (kcal/kg)</div>
-            <input type="number" id="calories" placeholder="輸入代謝能">
+            <input type="number" id="calories">
         </div>
 
-        <button class="calc-btn" onclick="calculate()">生成建議與動畫 🎬</button>
+        <button class="calc-btn" onclick="calculate()">計算 + 生成動畫 🎬</button>
 
-        <!-- Result Area -->
+        <!-- 結果區 -->
         <div id="result-card">
-            <div style="text-align: center;">
-                <div style="color:#888; font-size:0.9rem;">建議每日食量</div>
-                <span class="big-number" id="totalAmount">0</span> <span style="font-size:1.2rem">g</span>
-                <div id="totalKcal" style="color: var(--primary); font-size: 0.8rem;"></div>
+            <div style="text-align:center">
+                <span style="font-size:0.9rem; color:#999">建議每日總量</span><br>
+                <span style="font-size:2.5rem; font-weight:800; color:var(--primary)" id="totalAmount">0</span> g
             </div>
 
             <div class="meal-plan">
                 <div class="plan-item">
-                    <div style="font-size:0.8rem; color:#aaa">早晚制</div>
-                    <div style="font-weight:bold" id="meal2">0</div>
+                    <div style="font-size:0.8rem; color:#aaa">兩餐制</div>
+                    <strong id="meal2">0</strong> g
                 </div>
                 <div class="plan-item">
                     <div style="font-size:0.8rem; color:#aaa">三餐制</div>
-                    <div style="font-weight:bold" id="meal3">0</div>
+                    <strong id="meal3">0</strong> g
                 </div>
             </div>
 
-            <!-- The Walking Animation Track -->
-            <div class="runway-container">
-                <div class="walking-pet" id="walkingPet">
-                    <img id="walkingImg" src="" alt="walking">
-                </div>
+            <!-- 走路動畫 -->
+            <div class="runway">
+                <div class="walker" id="walker"></div>
             </div>
 
-            <div style="margin-top:15px; font-size:0.8rem; color:#777; line-height:1.4; background:#f9f9f9; padding:10px; border-radius:10px;">
-                💡 <span id="adviceText">記得要多喝水喔！</span>
+            <div style="margin-top:15px; font-size:0.85rem; color:#777; background:#f4f4f4; padding:10px; border-radius:10px;">
+                💡 <span id="adviceText"></span>
             </div>
         </div>
     </div>
 
     <script>
-        // 這些圖片連結來自 Flaticon / Freepik 的公開免費向量圖庫，風格統一為「可愛平面/卡通風」
-        // 看起來就像 AI 生成的 Q 版圖標
+        // --- SVG 繪圖引擎 (直接用代碼畫圖) ---
+        const svgs = {
+            // 狗狗基底：圓角方形臉
+            shiba: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M20,30 L30,5 L45,20 L55,20 L70,5 L80,30" fill="#D2691E"/> <!-- Ears -->
+                <rect x="20" y="25" width="60" height="55" rx="15" fill="#D2691E"/> <!-- Head -->
+                <path d="M25,45 Q50,85 75,45 L75,70 Q50,90 25,70 Z" fill="#FFF8DC"/> <!-- Cheeks -->
+                <circle cx="35" cy="45" r="4" fill="#333"/> <circle cx="65" cy="45" r="4" fill="#333"/> <!-- Eyes -->
+                <circle cx="28" cy="40" r="3" fill="white" opacity="0.5"/> <!-- Shine -->
+                <ellipse cx="50" cy="55" rx="6" ry="4" fill="#333"/> <!-- Nose -->
+            </svg>`,
+            corgi: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M15,20 L10,0 L35,20 Z" fill="#D2691E"/> <path d="M85,20 L90,0 L65,20 Z" fill="#D2691E"/> <!-- Big Ears -->
+                <rect x="20" y="20" width="60" height="55" rx="12" fill="#D2691E"/>
+                <rect x="46" y="20" width="8" height="30" fill="white"/> <!-- Blaze -->
+                <path d="M20,50 Q50,90 80,50 V70 Q50,95 20,70 Z" fill="white"/>
+                <circle cx="35" cy="45" r="4" fill="#333"/> <circle cx="65" cy="45" r="4" fill="#333"/>
+                <ellipse cx="50" cy="58" rx="5" ry="3" fill="#333"/>
+            </svg>`,
+            husky: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M20,25 L25,5 L40,20 Z" fill="#889"/> <path d="M80,25 L75,5 L60,20 Z" fill="#889"/>
+                <rect x="20" y="20" width="60" height="55" rx="15" fill="#889"/>
+                <path d="M20,35 Q35,60 50,35 Q65,60 80,35 V75 Q50,95 20,75 Z" fill="white"/> <!-- Mask -->
+                <path d="M30,38 L45,42" stroke="#333" stroke-width="2"/> <path d="M70,38 L55,42" stroke="#333" stroke-width="2"/> <!-- Angry Brows -->
+                <circle cx="38" cy="48" r="4" fill="#6495ED"/> <circle cx="62" cy="48" r="4" fill="#6495ED"/> <!-- Blue Eyes -->
+                <ellipse cx="50" cy="58" rx="5" ry="3" fill="#333"/>
+            </svg>`,
+            poodle: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <circle cx="30" cy="35" r="15" fill="#C19A6B"/> <circle cx="70" cy="35" r="15" fill="#C19A6B"/> <!-- Ears -->
+                <circle cx="50" cy="20" r="15" fill="#C19A6B"/> <!-- Topknot -->
+                <rect x="25" y="25" width="50" height="50" rx="20" fill="#C19A6B"/>
+                <circle cx="40" cy="45" r="3" fill="#333"/> <circle cx="60" cy="45" r="3" fill="#333"/>
+                <ellipse cx="50" cy="52" rx="4" ry="3" fill="#333"/>
+            </svg>`,
+            golden: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M10,40 Q5,60 20,50" stroke="#DAA520" stroke-width="10" fill="none"/> <!-- Floppy Ears L -->
+                <path d="M90,40 Q95,60 80,50" stroke="#DAA520" stroke-width="10" fill="none"/> <!-- Floppy Ears R -->
+                <rect x="22" y="22" width="56" height="56" rx="18" fill="#F4C430"/>
+                <circle cx="38" cy="45" r="4" fill="#5A3A29"/> <circle cx="62" cy="45" r="4" fill="#5A3A29"/>
+                <path d="M50,60 Q60,70 50,75 Q40,70 50,60" fill="#333"/> <!-- Nose -->
+                <path d="M50,75 Q60,80 50,85 Q40,80 50,75" fill="#FF9A9E"/> <!-- Tongue -->
+            </svg>`,
+            mix_dog: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M15,30 L20,10 L35,30 Z" fill="#333"/> <path d="M85,30 L80,10 L65,30 Z" fill="#333"/>
+                <rect x="20" y="25" width="60" height="55" rx="15" fill="#333"/>
+                <rect x="45" y="25" width="10" height="55" fill="white"/>
+                <circle cx="35" cy="45" r="4" fill="white"/> <circle cx="35" cy="45" r="2" fill="black"/>
+                <circle cx="65" cy="45" r="4" fill="white"/> <circle cx="65" cy="45" r="2" fill="black"/>
+                <ellipse cx="50" cy="60" rx="6" ry="4" fill="pink"/>
+            </svg>`,
+            
+            // 貓咪基底：圓臉+尖耳
+            orange: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M20,30 L25,5 L45,25 Z" fill="#FFA500"/> <path d="M80,30 L75,5 L55,25 Z" fill="#FFA500"/> <!-- Ears -->
+                <circle cx="50" cy="50" r="35" fill="#FFA500"/>
+                <path d="M40,20 L50,30 L60,20" fill="none" stroke="#D2691E" stroke-width="3"/> <!-- Stripes -->
+                <path d="M20,50 H5" stroke="#333" stroke-width="1"/> <path d="M80,50 H95" stroke="#333" stroke-width="1"/> <!-- Whiskers -->
+                <circle cx="38" cy="45" r="4" fill="#333"/> <circle cx="62" cy="45" r="4" fill="#333"/>
+                <path d="M45,55 L50,60 L55,55" stroke="#333" fill="none"/> <!-- Mouth -->
+            </svg>`,
+            tuxedo: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M20,30 L25,5 L45,25 Z" fill="#333"/> <path d="M80,30 L75,5 L55,25 Z" fill="#333"/>
+                <circle cx="50" cy="50" r="35" fill="#333"/>
+                <path d="M50,50 L30,85 H70 Z" fill="white"/> <!-- Tuxedo Chest (Abstract) -->
+                <path d="M50,50 L40,80 H60 Z" fill="white" transform="rotate(180 50 50)"/> <!-- Face mask -->
+                <circle cx="38" cy="45" r="4" fill="#FFD700"/> <circle cx="62" cy="45" r="4" fill="#FFD700"/> <!-- Yellow Eyes -->
+                <circle cx="50" cy="55" r="2" fill="pink"/>
+            </svg>`,
+            siamese: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M20,30 L25,5 L45,25 Z" fill="#443322"/> <path d="M80,30 L75,5 L55,25 Z" fill="#443322"/>
+                <circle cx="50" cy="50" r="35" fill="#F5DEB3"/>
+                <circle cx="50" cy="50" r="20" fill="#554433" opacity="0.8"/> <!-- Dark Face -->
+                <circle cx="38" cy="45" r="4" fill="#87CEEB"/> <circle cx="62" cy="45" r="4" fill="#87CEEB"/> <!-- Blue Eyes -->
+                <circle cx="50" cy="55" r="2" fill="#333"/>
+            </svg>`,
+            calico: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M20,30 L25,5 L45,25 Z" fill="#333"/> <path d="M80,30 L75,5 L55,25 Z" fill="#FFA500"/>
+                <circle cx="50" cy="50" r="35" fill="white"/>
+                <circle cx="30" cy="35" r="10" fill="#333"/> <circle cx="70" cy="40" r="12" fill="#FFA500"/> <!-- Spots -->
+                <circle cx="38" cy="48" r="4" fill="#333"/> <circle cx="62" cy="48" r="4" fill="#333"/>
+                <path d="M45,58 L50,63 L55,58" stroke="#333" fill="none"/>
+            </svg>`,
+            grey: `<svg class="pet-svg" viewBox="0 0 100 100">
+                <path d="M20,30 L25,5 L45,25 Z" fill="#778899"/> <path d="M80,30 L75,5 L55,25 Z" fill="#778899"/>
+                <circle cx="50" cy="50" r="35" fill="#778899"/>
+                <circle cx="38" cy="45" r="5" fill="#CCFF00"/> <circle cx="38" cy="45" r="2" fill="#333"/> <!-- Green Eyes -->
+                <circle cx="62" cy="45" r="5" fill="#CCFF00"/> <circle cx="62" cy="45" r="2" fill="#333"/>
+                <path d="M15,50 H30" stroke="#ddd"/> <path d="M70,50 H85" stroke="#ddd"/>
+            </svg>`,
+            default_cat: `<svg class="pet-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#ddd"/><text x="35" y="55" font-size="30">🐱</text></svg>`,
+            default_dog: `<svg class="pet-svg" viewBox="0 0 100 100"><rect x="25" y="25" width="50" height="50" rx="10" fill="#ddd"/><text x="35" y="60" font-size="30">🐶</text></svg>`
+        };
+
+        // --- 資料庫 ---
         const data = {
             dog: {
                 breeds: [
-                    { name: "柴犬 (Shiba)", weight: 10, img: "https://cdn-icons-png.flaticon.com/512/235/235349.png" },
-                    { name: "柯基 (Corgi)", weight: 12, img: "https://cdn-icons-png.flaticon.com/512/185/185493.png" },
-                    { name: "貴賓/比熊 (Poodle)", weight: 4, img: "https://cdn-icons-png.flaticon.com/512/2829/2829822.png" },
-                    { name: "哈士奇 (Husky)", weight: 23, img: "https://cdn-icons-png.flaticon.com/512/616/616440.png" },
-                    { name: "黃金獵犬 (Golden)", weight: 30, img: "https://cdn-icons-png.flaticon.com/512/235/235421.png" },
-                    { name: "法鬥 (Bulldog)", weight: 11, img: "https://cdn-icons-png.flaticon.com/512/2829/2829810.png" },
-                    { name: "吉娃娃 (Chihuahua)", weight: 2, img: "https://cdn-icons-png.flaticon.com/512/2829/2829844.png" },
-                    { name: "臘腸犬 (Dachshund)", weight: 5, img: "https://cdn-icons-png.flaticon.com/512/2829/2829839.png" },
-                    { name: "米克斯 (Mix)", weight: 15, img: "https://cdn-icons-png.flaticon.com/512/91/91544.png" },
-                    { name: "拉不拉多 (Labrador)", weight: 32, img: "https://cdn-icons-png.flaticon.com/512/235/235351.png" },
-                    { name: "雪納瑞 (Schnauzer)", weight: 7, img: "https://cdn-icons-png.flaticon.com/512/2829/2829803.png" },
-                    { name: "博美 (Pomeranian)", weight: 2.5, img: "https://cdn-icons-png.flaticon.com/512/235/235396.png" }
+                    { name: "柴犬", weight: 10, svg: "shiba" },
+                    { name: "柯基", weight: 12, svg: "corgi" },
+                    { name: "哈士奇", weight: 23, svg: "husky" },
+                    { name: "貴賓/比熊", weight: 5, svg: "poodle" },
+                    { name: "黃金獵犬", weight: 30, svg: "golden" },
+                    { name: "米克斯 (黑)", weight: 15, svg: "mix_dog" },
+                    { name: "臘腸犬", weight: 5, svg: "golden" }, // 借用垂耳特徵
+                    { name: "法鬥/巴哥", weight: 11, svg: "mix_dog" }
                 ],
                 conditions: [
                     { val: 1.6, text: "成犬 (已結紮)" },
                     { val: 1.8, text: "成犬 (未結紮)" },
-                    { val: 3.0, text: "幼犬 (4個月以下)" },
-                    { val: 2.0, text: "幼犬 (成長中)" },
-                    { val: 1.0, text: "老犬 / 減肥中" }
+                    { val: 3.0, text: "幼犬 (小寶寶)" },
+                    { val: 1.0, text: "減肥中" }
                 ],
                 foods: [
                     { name: "Royal Canin 皇家", kcal: 3960 },
                     { name: "Orijen 渴望", kcal: 3960 },
                     { name: "Real Power 瑞威", kcal: 4050 },
                     { name: "Hill's 希爾思", kcal: 3650 },
-                    { name: "Taste of Wild 海陸", kcal: 3600 },
-                    { name: "Farmina 法米納", kcal: 3960 },
                     { name: "ZiwiPeak 巔峰", kcal: 5600 }
                 ]
             },
             cat: {
                 breeds: [
-                    { name: "橘貓 (Orange Tabby)", weight: 5.5, img: "https://cdn-icons-png.flaticon.com/512/616/616554.png" },
-                    { name: "賓士貓 (Tuxedo)", weight: 4.5, img: "https://cdn-icons-png.flaticon.com/512/1998/1998610.png" },
-                    { name: "美短 (Shorthair)", weight: 5, img: "https://cdn-icons-png.flaticon.com/512/616/616430.png" },
-                    { name: "暹羅貓 (Siamese)", weight: 3.5, img: "https://cdn-icons-png.flaticon.com/512/616/616419.png" },
-                    { name: "布偶貓 (Ragdoll)", weight: 6, img: "https://cdn-icons-png.flaticon.com/512/2829/2829734.png" },
-                    { name: "三花貓 (Calico)", weight: 4, img: "https://cdn-icons-png.flaticon.com/512/1818/1818401.png" },
-                    { name: "黑貓 (Black Cat)", weight: 4.5, img: "https://cdn-icons-png.flaticon.com/512/616/616569.png" },
-                    { name: "無毛貓 (Sphynx)", weight: 4, img: "https://cdn-icons-png.flaticon.com/512/2829/2829703.png" }
+                    { name: "橘貓 (易胖體質)", weight: 5.5, svg: "orange" },
+                    { name: "賓士貓", weight: 4.5, svg: "tuxedo" },
+                    { name: "暹羅貓", weight: 3.5, svg: "siamese" },
+                    { name: "三花貓", weight: 4, svg: "calico" },
+                    { name: "英短/藍貓", weight: 5, svg: "grey" },
+                    { name: "米克斯 (白底)", weight: 4.5, svg: "calico" } // 借用
                 ],
                 conditions: [
-                    { val: 1.2, text: "成貓 (已結紮/室內)" },
-                    { val: 1.4, text: "成貓 (未結紮/活躍)" },
-                    { val: 2.5, text: "幼貓 (成長中)" },
-                    { val: 0.8, text: "減肥中 (胖胖貓)" }
+                    { val: 1.2, text: "成貓 (室內)" },
+                    { val: 1.4, text: "成貓 (活潑)" },
+                    { val: 2.5, text: "幼貓" },
+                    { val: 0.8, text: "胖胖貓 (減肥)" }
                 ],
                 foods: [
                     { name: "Royal Canin 皇家", kcal: 3750 },
                     { name: "Orijen 渴望", kcal: 4060 },
                     { name: "Real Power 瑞威", kcal: 4150 },
                     { name: "Wellness CORE", kcal: 3977 },
-                    { name: "GO! 高肉量", kcal: 4298 },
-                    { name: "Instinct 原點", kcal: 4150 },
-                    { name: "怪獸部落鮮肉糧", kcal: 4100 }
+                    { name: "怪獸部落", kcal: 4100 }
                 ]
             }
         };
 
         const adviceList = {
-            dog: [
-                "散步是狗狗最快樂的時光，記得每天都要出門走走！",
-                "狗狗如果吃太快，可以使用慢食碗，避免脹氣喔。",
-                "定期幫狗狗剪指甲，太長會影響走路姿勢。",
-                "夏天柏油路很燙，請用手背測試溫度再讓狗狗走。"
-            ],
-            cat: [
-                "貓咪不愛喝水？可以試試看流動飲水機！",
-                "貓砂盆至少要比貓咪數量多一個 (N+1原則)。",
-                "乾飼料開封後，建議分裝並在一個月內吃完。",
-                "貓咪很會忍痛，食慾下降通常是生病的警訊。"
-            ]
+            dog: ["散步請避開正中午喔！", "不能吃巧克力與葡萄！", "定期要點除跳蚤藥喔。"],
+            cat: ["多喝水預防腎臟病！", "百合花對貓有劇毒！", "紙箱是貓咪最好的朋友。"]
         };
 
+        // --- 邏輯控制 ---
         function initData() {
             const type = document.querySelector('input[name="petType"]:checked').value;
-            const currentData = data[type];
+            const d = data[type];
             const root = document.documentElement;
-            
-            // Reset UI
-            document.getElementById('petImage').style.display = 'none';
-            document.getElementById('defaultEmoji').style.display = 'block';
-            document.getElementById('defaultEmoji').innerText = type === 'dog' ? '🐶' : '🐱';
-            document.getElementById('result-card').style.display = 'none';
 
-            // Populate Breeds
-            const breedSelect = document.getElementById('breedSelect');
-            breedSelect.innerHTML = '<option value="">-- 請選擇可愛品種 --</option>';
-            currentData.breeds.forEach((b, index) => {
-                const opt = document.createElement('option');
-                opt.value = index;
-                opt.text = b.name;
-                breedSelect.appendChild(opt);
-            });
-
-            // Populate Conditions
-            const condSelect = document.getElementById('condition');
-            condSelect.innerHTML = '';
-            currentData.conditions.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.val;
-                opt.text = c.text;
-                condSelect.appendChild(opt);
-            });
-
-            // Populate Foods
-            const foodSelect = document.getElementById('foodBrand');
-            foodSelect.innerHTML = '<option value="0">-- 品牌 --</option>';
-            currentData.foods.forEach(f => {
-                const opt = document.createElement('option');
-                opt.value = f.kcal;
-                opt.text = f.name;
-                foodSelect.appendChild(opt);
-            });
-
-            // Theme Colors
-            if (type === 'cat') {
+            // 顏色切換
+            if(type === 'cat'){
                 root.style.setProperty('--primary', '#74b9ff');
-                root.style.setProperty('--primary-dark', '#0984e3');
                 root.style.setProperty('--secondary', '#dfe6e9');
                 root.style.setProperty('--bg', '#f0f7ff');
-                root.style.setProperty('--accent', '#ff7675');
             } else {
-                root.style.setProperty('--primary', '#ff7675');
-                root.style.setProperty('--primary-dark', '#d63031');
-                root.style.setProperty('--secondary', '#ffeaa7');
-                root.style.setProperty('--bg', '#fff0f3');
-                root.style.setProperty('--accent', '#74b9ff');
+                root.style.setProperty('--primary', '#FF9A9E');
+                root.style.setProperty('--secondary', '#FECFEF');
+                root.style.setProperty('--bg', '#FFF0F3');
             }
+
+            // 填入選單
+            const bs = document.getElementById('breedSelect');
+            bs.innerHTML = '<option value="">-- 請選擇 --</option>';
+            d.breeds.forEach((b, i) => {
+                bs.innerHTML += `<option value="${i}">${b.name}</option>`;
+            });
+
+            const cs = document.getElementById('condition');
+            cs.innerHTML = '';
+            d.conditions.forEach(c => {
+                cs.innerHTML += `<option value="${c.val}">${c.text}</option>`;
+            });
+
+            const fs = document.getElementById('foodBrand');
+            fs.innerHTML = '<option value="0">-- 品牌 --</option>';
+            d.foods.forEach(f => {
+                fs.innerHTML += `<option value="${f.kcal}">${f.name}</option>`;
+            });
+
+            // 重置圖案
+            document.getElementById('displayArea').innerHTML = type === 'dog' ? svgs.default_dog : svgs.default_cat;
+            document.getElementById('result-card').style.display = 'none';
         }
 
-        function updateBreedInfo() {
+        function updateBreed() {
             const type = document.querySelector('input[name="petType"]:checked').value;
-            const index = document.getElementById('breedSelect').value;
-            const imgEl = document.getElementById('petImage');
-            const emojiEl = document.getElementById('defaultEmoji');
-            const weightInput = document.getElementById('weight');
-
-            if (index !== "") {
-                const breedData = data[type].breeds[index];
-                weightInput.value = breedData.weight;
-                
-                // Set Image
-                if (breedData.img) {
-                    imgEl.src = breedData.img;
-                    imgEl.style.display = 'block';
-                    emojiEl.style.display = 'none';
-                }
+            const idx = document.getElementById('breedSelect').value;
+            if(idx !== "") {
+                const b = data[type].breeds[idx];
+                document.getElementById('weight').value = b.weight;
+                // 注入 SVG
+                document.getElementById('displayArea').innerHTML = svgs[b.svg] || (type==='dog'?svgs.default_dog:svgs.default_cat);
             }
         }
 
-        function updateCaloriesFromBrand() {
-            const kcal = document.getElementById('foodBrand').value;
-            if (kcal != "0") {
-                document.getElementById('calories').value = kcal;
-            }
+        function updateCalories() {
+            const v = document.getElementById('foodBrand').value;
+            if(v != "0") document.getElementById('calories').value = v;
         }
 
         function calculate() {
-            const weight = parseFloat(document.getElementById('weight').value);
-            const factor = parseFloat(document.getElementById('condition').value);
-            const kcal = parseFloat(document.getElementById('calories').value);
+            const w = parseFloat(document.getElementById('weight').value);
+            const f = parseFloat(document.getElementById('condition').value);
+            const k = parseFloat(document.getElementById('calories').value);
             const type = document.querySelector('input[name="petType"]:checked').value;
-            const index = document.getElementById('breedSelect').value;
 
-            if (!weight || !kcal) {
-                alert("請輸入體重與熱量喔！🐾");
-                return;
-            }
+            if(!w || !k) { alert("請填寫完整資料喔！"); return; }
 
-            // Calculation
-            const rer = 70 * Math.pow(weight, 0.75);
-            const der = rer * factor;
-            const totalGrams = (der / kcal) * 1000;
+            const rer = 70 * Math.pow(w, 0.75);
+            const der = rer * f;
+            const total = (der / k) * 1000;
 
-            // Show Results
             document.getElementById('result-card').style.display = 'block';
-            document.getElementById('totalAmount').innerText = Math.round(totalGrams);
-            document.getElementById('meal2').innerText = Math.round(totalGrams / 2) + " g";
-            document.getElementById('meal3').innerText = Math.round(totalGrams / 3) + " g";
-            document.getElementById('totalKcal').innerText = `(每日約 ${Math.round(der)} kcal)`;
+            document.getElementById('totalAmount').innerText = Math.round(total);
+            document.getElementById('meal2').innerText = Math.round(total/2);
+            document.getElementById('meal3').innerText = Math.round(total/3);
 
-            // Advice
-            const adviceArr = adviceList[type];
-            document.getElementById('adviceText').innerText = adviceArr[Math.floor(Math.random() * adviceArr.length)];
+            // 設定動畫主角
+            const currentSVG = document.getElementById('displayArea').innerHTML;
+            document.getElementById('walker').innerHTML = currentSVG;
 
-            // --- 🎬 Walking Animation Logic ---
-            const walkingImg = document.getElementById('walkingImg');
-            // If a specific breed is selected, use its image. If not, use a generic one.
-            if (index !== "") {
-                walkingImg.src = data[type].breeds[index].img;
-            } else {
-                // Fallback icons
-                walkingImg.src = type === 'dog' ? 
-                    "https://cdn-icons-png.flaticon.com/512/235/235349.png" : 
-                    "https://cdn-icons-png.flaticon.com/512/616/616554.png";
-            }
-
-            // Scroll to result
-            setTimeout(() => {
-                document.getElementById('result-card').scrollIntoView({behavior: 'smooth'});
-            }, 100);
+            // 隨機建議
+            const arr = adviceList[type];
+            document.getElementById('adviceText').innerText = arr[Math.floor(Math.random()*arr.length)];
+            
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
 
-        // Init
         initData();
     </script>
 </body>
