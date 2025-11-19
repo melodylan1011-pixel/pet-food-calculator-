@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>毛孩智能飲食管家 🐾</title>
+    <title>毛孩飲食計算機 (豪華版) 🐾</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -24,18 +24,18 @@
             color: var(--text);
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Changed for longer content */
+            align-items: flex-start;
             min-height: 100vh;
             margin: 0;
-            padding: 40px 20px;
+            padding: 30px 15px;
         }
 
         .container {
             background: var(--card-bg);
-            padding: 2.5rem;
+            padding: 2rem;
             border-radius: 35px;
-            box-shadow: 0 15px 35px rgba(255, 154, 158, 0.15);
-            max-width: 480px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
             width: 100%;
             border: 5px solid white;
             position: relative;
@@ -44,7 +44,7 @@
         h1 {
             text-align: center;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+            margin: 0 0 0.5rem 0;
             font-size: 1.8rem;
         }
         
@@ -55,19 +55,52 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Pet Switcher */
+        /* Image Display Area */
+        .pet-image-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid var(--secondary);
+            background: #f5f5f5;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .pet-image-container:hover {
+            transform: scale(1.05) rotate(3deg);
+        }
+
+        #petImage {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .default-emoji {
+            font-size: 4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            background: white;
+        }
+
+        /* Toggle Switch */
         .pet-toggle {
             display: flex;
             background: #f0f0f0;
             border-radius: 50px;
             padding: 5px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             position: relative;
         }
 
-        .pet-toggle input {
-            display: none;
-        }
+        .pet-toggle input { display: none; }
 
         .pet-toggle label {
             flex: 1;
@@ -81,9 +114,7 @@
             border-radius: 50px;
         }
 
-        .pet-toggle input:checked + label {
-            color: white;
-        }
+        .pet-toggle input:checked + label { color: white; }
 
         .slider {
             position: absolute;
@@ -108,10 +139,7 @@
             color: var(--primary);
             font-weight: bold;
             margin-top: 15px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            margin-bottom: 5px;
         }
 
         select, input {
@@ -123,10 +151,9 @@
             font-size: 1rem;
             font-family: inherit;
             background: white;
-            transition: 0.3s;
             box-sizing: border-box;
             outline: none;
-            color: var(--text);
+            transition: 0.2s;
         }
 
         select:focus, input:focus {
@@ -134,10 +161,7 @@
             box-shadow: 0 0 0 3px rgba(255, 154, 158, 0.2);
         }
 
-        .input-group {
-            position: relative;
-        }
-        
+        .input-group { position: relative; }
         .input-suffix {
             position: absolute;
             right: 15px;
@@ -151,9 +175,9 @@
             background: linear-gradient(45deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 16px;
+            padding: 15px;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
@@ -162,13 +186,11 @@
             transition: transform 0.2s;
         }
 
-        button.calc-btn:active {
-            transform: scale(0.98);
-        }
+        button.calc-btn:active { transform: scale(0.98); }
 
         /* Results */
         #result-card {
-            background: linear-gradient(135deg, #fff5f7 0%, #fff 100%);
+            background: linear-gradient(135deg, #fff8f9 0%, #fff 100%);
             border: 2px solid var(--secondary);
             padding: 20px;
             border-radius: 25px;
@@ -185,21 +207,15 @@
         }
 
         .big-number {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: var(--primary);
-            line-height: 1;
-        }
-
-        .unit {
-            font-size: 1rem;
-            color: #888;
         }
 
         .meal-plan {
             display: flex;
-            justify-content: space-around;
-            text-align: center;
+            justify-content: space-between;
+            gap: 10px;
         }
 
         .plan-item {
@@ -208,39 +224,20 @@
             border-radius: 15px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             flex: 1;
-            margin: 0 5px;
+            text-align: center;
         }
 
-        .plan-title {
-            font-size: 0.8rem;
-            color: #999;
-            margin-bottom: 5px;
-        }
+        .plan-title { font-size: 0.8rem; color: #999; }
+        .plan-val { font-weight: bold; color: var(--text); }
 
-        .plan-val {
-            font-weight: bold;
-            color: var(--text);
-            font-size: 1.1rem;
-        }
-
-        /* Advice Section */
         .advice-box {
-            margin-top: 25px;
+            margin-top: 20px;
             background: #F0F7FF;
             padding: 15px;
             border-radius: 15px;
-            border-left: 5px solid var(--accent);
-            font-size: 0.9rem;
+            border-left: 4px solid #5B86E5;
+            font-size: 0.85rem;
             line-height: 1.5;
-        }
-        
-        .advice-title {
-            font-weight: bold;
-            color: #5B86E5;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
         @keyframes slideUp {
@@ -248,10 +245,9 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive tweaks */
+        /* Mobile Fix */
         @media (max-width: 400px) {
             .container { padding: 1.5rem; }
-            .big-number { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -259,178 +255,207 @@
 
     <div class="container">
         <h1>毛孩飲食管家 🐾</h1>
-        <p class="subtitle">選擇品種與飼料，一鍵計算建議食量</p>
+        <p class="subtitle">選擇品種看照片，一鍵計算健康食量</p>
+
+        <!-- Image Area -->
+        <div class="pet-image-container">
+            <div id="defaultEmoji" class="default-emoji">🐶</div>
+            <img id="petImage" src="" alt="Pet Image" style="display: none;">
+        </div>
 
         <!-- Pet Switcher -->
         <div class="pet-toggle">
             <input type="radio" id="dog" name="petType" value="dog" checked onchange="initData()">
-            <label for="dog">🐶 狗狗</label>
+            <label for="dog">狗狗</label>
             <input type="radio" id="cat" name="petType" value="cat" onchange="initData()">
-            <label for="cat">🐱 貓咪</label>
+            <label for="cat">貓咪</label>
             <div class="slider"></div>
         </div>
 
-        <!-- Input Fields -->
-        <div>
-            <div class="section-title">🧬 品種 (協助預填體重)</div>
-            <select id="breedSelect" onchange="updateWeightFromBreed()">
-                <option value="">-- 請選擇品種 --</option>
-            </select>
+        <!-- Inputs -->
+        <div class="section-title">🧬 選擇品種 (自動帶入體重)</div>
+        <select id="breedSelect" onchange="updateBreedInfo()">
+            <option value="">-- 請選擇品種 --</option>
+        </select>
 
-            <div class="section-title">⚖️ 體重 (kg)</div>
-            <div class="input-group">
-                <input type="number" id="weight" placeholder="輸入實際體重" step="0.1">
-                <span class="input-suffix">kg</span>
-            </div>
-
-            <div class="section-title">🏃 生活型態</div>
-            <select id="condition">
-                <!-- Populated by JS -->
-            </select>
-
-            <div class="section-title">🥫 選擇飼料品牌</div>
-            <select id="foodBrand" onchange="updateCaloriesFromBrand()">
-                <option value="0">-- 手動輸入或選擇品牌 --</option>
-                <!-- Populated by JS -->
-            </select>
-
-            <div class="section-title">🔥 熱量 (kcal/kg)</div>
-            <div class="input-group">
-                <input type="number" id="calories" placeholder="包裝背面的代謝能(ME)">
-                <span class="input-suffix">kcal/kg</span>
-            </div>
+        <div class="section-title">⚖️ 體重 (kg)</div>
+        <div class="input-group">
+            <input type="number" id="weight" placeholder="輸入實際體重" step="0.1">
+            <span class="input-suffix">kg</span>
         </div>
 
-        <button class="calc-btn" onclick="calculate()">開始計算 ✨</button>
+        <div class="section-title">🏃 生命階段 / 活動量</div>
+        <select id="condition">
+            <!-- JS Populated -->
+        </select>
 
-        <!-- Results -->
+        <div class="section-title">🥫 選擇飼料品牌</div>
+        <select id="foodBrand" onchange="updateCaloriesFromBrand()">
+            <option value="0">-- 手動輸入或選擇品牌 --</option>
+            <!-- JS Populated -->
+        </select>
+
+        <div class="section-title">🔥 熱量 (kcal/kg)</div>
+        <div class="input-group">
+            <input type="number" id="calories" placeholder="包裝背面的代謝能(ME)">
+            <span class="input-suffix">kcal/kg</span>
+        </div>
+
+        <button class="calc-btn" onclick="calculate()">計算建議食量 ✨</button>
+
+        <!-- Result -->
         <div id="result-card">
             <div class="main-result">
-                <div style="margin-bottom:5px; font-size:0.9rem; color:#888;">建議每日總量</div>
-                <span class="big-number" id="totalAmount">0</span>
-                <span class="unit">g (公克)</span>
-                <div style="font-size: 0.8rem; color: var(--primary); margin-top: 5px;" id="totalKcal"></div>
+                <div style="font-size:0.9rem; color:#888;">建議每日總量</div>
+                <span class="big-number" id="totalAmount">0</span> <span style="color:#888">g</span>
+                <div style="font-size: 0.8rem; color: var(--primary);" id="totalKcal"></div>
             </div>
 
             <div class="meal-plan">
                 <div class="plan-item">
-                    <div class="plan-title">早晚兩餐</div>
-                    <div class="plan-val"><span id="meal2">0</span> g / 餐</div>
+                    <div class="plan-title">早晚兩餐制</div>
+                    <div class="plan-val"><span id="meal2">0</span> g/餐</div>
                 </div>
                 <div class="plan-item">
-                    <div class="plan-title">少量三餐</div>
-                    <div class="plan-val"><span id="meal3">0</span> g / 餐</div>
+                    <div class="plan-title">少量三餐制</div>
+                    <div class="plan-val"><span id="meal3">0</span> g/餐</div>
                 </div>
             </div>
 
             <div class="advice-box">
-                <div class="advice-title">💡 獸醫小叮嚀</div>
-                <div id="adviceText">計算結果僅供參考，請依照毛孩體態(BCS)調整。換飼料請遵循「7日換食法」避免軟便喔！</div>
+                <strong>💡 獸醫小叮嚀：</strong><br>
+                <span id="adviceText"></span>
             </div>
         </div>
     </div>
 
     <script>
-        // --- Data Database ---
+        // --- 大量擴充的資料庫 (包含圖片連結) ---
+        // 圖片使用 Wikimedia Commons 或穩定的圖庫連結
         const data = {
             dog: {
                 breeds: [
-                    { name: "米克斯 (中型)", weight: 15 },
-                    { name: "貴賓犬 (玩具型)", weight: 3 },
-                    { name: "柴犬", weight: 9 },
-                    { name: "黃金獵犬", weight: 30 },
-                    { name: "拉不拉多", weight: 32 },
-                    { name: "柯基", weight: 12 },
-                    { name: "法鬥", weight: 11 },
-                    { name: "博美", weight: 2.5 },
-                    { name: "吉娃娃", weight: 2 },
-                    { name: "哈士奇", weight: 23 },
-                    { name: "邊境牧羊犬", weight: 18 },
-                    { name: "比熊", weight: 5 }
+                    { name: "米克斯 (混種)", weight: 15, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Taiwan_Dog_2.jpg/500px-Taiwan_Dog_2.jpg" },
+                    { name: "貴賓犬 (玩具型)", weight: 3.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Full_attention_%288067543690%29.jpg/500px-Full_attention_%288067543690%29.jpg" },
+                    { name: "柴犬", weight: 10, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Taka_Shiba.jpg/500px-Taka_Shiba.jpg" },
+                    { name: "馬爾濟斯", weight: 2.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Maltese_600.jpg/500px-Maltese_600.jpg" },
+                    { name: "柯基", weight: 12, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Welsh_Corgi_Pembroke.jpg/500px-Welsh_Corgi_Pembroke.jpg" },
+                    { name: "黃金獵犬", weight: 30, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/500px-Golden_Retriever_Dukedestiny01_drvd.jpg" },
+                    { name: "拉不拉多", weight: 32, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/YellowLabradorLooking_new.jpg/500px-YellowLabradorLooking_new.jpg" },
+                    { name: "法國鬥牛犬", weight: 11, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/2008-07-28_Dog_at_Frolick_Field.jpg/500px-2008-07-28_Dog_at_Frolick_Field.jpg" },
+                    { name: "長毛臘腸犬", weight: 5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Short_haired_Dachshund.jpg/500px-Short_haired_Dachshund.jpg" },
+                    { name: "博美犬", weight: 2.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Pomeranian.JPG/500px-Pomeranian.JPG" },
+                    { name: "吉娃娃", weight: 2, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Chihuahua1_bvdb.jpg/500px-Chihuahua1_bvdb.jpg" },
+                    { name: "雪納瑞 (迷你)", weight: 7, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Miniature_Schnauzer_Rony_2012.jpg/500px-Miniature_Schnauzer_Rony_2012.jpg" },
+                    { name: "比格犬 (米格魯)", weight: 10, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Beagle_600.jpg/500px-Beagle_600.jpg" },
+                    { name: "邊境牧羊犬", weight: 18, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Border_Collie_600.jpg/500px-Border_Collie_600.jpg" },
+                    { name: "哈士奇", weight: 23, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Siberian_Husky_bi-eyed_Flickr.jpg/500px-Siberian_Husky_bi-eyed_Flickr.jpg" },
+                    { name: "比熊犬", weight: 5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Bichon_Fris%C3%A9_-_studiocanal.jpg/500px-Bichon_Fris%C3%A9_-_studiocanal.jpg" },
+                    { name: "約克夏", weight: 3, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/A_Yorkshire_Terrier_in_Needham.jpg/500px-A_Yorkshire_Terrier_in_Needham.jpg" }
                 ],
                 conditions: [
                     { val: 1.6, text: "成犬 (已結紮/一般)" },
-                    { val: 1.8, text: "成犬 (未結紮)" },
+                    { val: 1.8, text: "成犬 (未結紮/活潑)" },
                     { val: 3.0, text: "幼犬 (4個月以下)" },
                     { val: 2.0, text: "幼犬 (成長中)" },
-                    { val: 1.0, text: "減重中 / 老犬" },
-                    { val: 1.2, text: "活動量極低" },
-                    { val: 2.0, text: "工作犬 / 高活動量" }
+                    { val: 1.0, text: "老犬 / 需減重 / 易胖" },
+                    { val: 2.0, text: "高活動量 (工作犬/常運動)" }
                 ],
                 foods: [
-                    { name: "皇家 (Royal Canin) 小型成犬", kcal: 3960 },
-                    { name: "皇家 (Royal Canin) 中型成犬", kcal: 3840 },
-                    { name: "Orijen (渴望) 原味鮮雞", kcal: 3960 },
-                    { name: "Orijen (渴望) 六種魚", kcal: 3860 },
-                    { name: "Hill's (希爾思) 成犬", kcal: 3650 },
-                    { name: "Real Power (瑞威) 1號草原羊", kcal: 4050 },
-                    { name: "ZiwiPeak (巔峰) 羊肉肉乾", kcal: 5600 },
-                    { name: "Acana (愛肯拿) 單一蛋白鴨肉", kcal: 3393 },
-                    { name: "紐頓 (Nutram) T23 火雞", kcal: 3725 }
+                    { name: "Royal Canin 皇家 - 小型成犬", kcal: 3960 },
+                    { name: "Royal Canin 皇家 - 黃金獵犬專用", kcal: 3620 },
+                    { name: "Orijen 渴望 - 原味鮮雞 (高蛋白)", kcal: 3960 },
+                    { name: "Orijen 渴望 - 六種魚", kcal: 3860 },
+                    { name: "Real Power 瑞威 - 1號草原羊", kcal: 4050 },
+                    { name: "Real Power 瑞威 - 2號森林燉雞", kcal: 3950 },
+                    { name: "Hill's 希爾思 - 成犬雞肉", kcal: 3650 },
+                    { name: "Hill's 希爾思 - 完美體態(減肥)", kcal: 3200 },
+                    { name: "Acana 愛肯拿 - 單一蛋白鴨肉", kcal: 3393 },
+                    { name: "Taste of the Wild 海陸饗宴 - 太平洋燻鮭", kcal: 3600 },
+                    { name: "Farmina 法米納 - 南瓜無穀羊肉", kcal: 3960 },
+                    { name: "Blackwood 柏萊富 - 特調雞肉", kcal: 3800 },
+                    { name: "ZiwiPeak 巔峰 - 羊肉肉乾 (高熱量)", kcal: 5600 }
                 ]
             },
             cat: {
                 breeds: [
-                    { name: "米克斯 (一般)", weight: 4.5 },
-                    { name: "美國短毛貓", weight: 5 },
-                    { name: "英國短毛貓", weight: 5.5 },
-                    { name: "布偶貓", weight: 6.5 },
-                    { name: "波斯貓", weight: 4 },
-                    { name: "曼赤肯 (短腿)", weight: 3.5 },
-                    { name: "暹羅貓", weight: 3.5 },
-                    { name: "緬因貓", weight: 7.5 }
+                    { name: "米克斯 (一般)", weight: 4.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Kittyply_edit1.jpg/500px-Kittyply_edit1.jpg" },
+                    { name: "美國短毛貓", weight: 5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/American_Shorthair.jpg/500px-American_Shorthair.jpg" },
+                    { name: "英國短毛貓", weight: 5.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Britishblue.jpg/500px-Britishblue.jpg" },
+                    { name: "布偶貓", weight: 6.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Ragdoll_from_Gatil_Ragbelas.jpg/500px-Ragdoll_from_Gatil_Ragbelas.jpg" },
+                    { name: "賓士貓 (米克斯)", weight: 4.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Tuxedo_Cat_-_Socks_-_02.jpg/500px-Tuxedo_Cat_-_Socks_-_02.jpg" },
+                    { name: "橘貓 (易胖)", weight: 5.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Johnny_Automatic_standing_cat.svg/500px-Johnny_Automatic_standing_cat.svg.png" }, 
+                    { name: "波斯貓", weight: 4, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/White_Persian_Cat.jpg/500px-White_Persian_Cat.jpg" },
+                    { name: "曼赤肯 (短腿)", weight: 3.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Munchkin_cat_puffy.jpg/500px-Munchkin_cat_puffy.jpg" },
+                    { name: "暹羅貓", weight: 3.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg" },
+                    { name: "緬因貓", weight: 7.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Maine_Coon_cat_by_Tomtheman5.jpg/500px-Maine_Coon_cat_by_Tomtheman5.jpg" },
+                    { name: "俄羅斯藍貓", weight: 4, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Russian_Blue_Cat.jpg/500px-Russian_Blue_Cat.jpg" },
+                    { name: "無毛貓 (斯芬克斯)", weight: 4, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Sphinx2_July_2006.jpg/500px-Sphinx2_July_2006.jpg" },
+                    { name: "異國短毛貓 (加菲)", weight: 4.5, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Exotic_Shorthair.JPG/500px-Exotic_Shorthair.JPG" }
                 ],
                 conditions: [
                     { val: 1.2, text: "成貓 (已結紮/室內)" },
                     { val: 1.4, text: "成貓 (未結紮/活躍)" },
                     { val: 2.5, text: "幼貓 (成長中)" },
-                    { val: 0.8, text: "減重中 / 胖胖貓" },
+                    { val: 0.8, text: "減重中 / 肥胖" },
                     { val: 1.0, text: "老貓 (活動力低)" },
                     { val: 1.6, text: "懷孕 / 哺乳期" }
                 ],
                 foods: [
-                    { name: "皇家 (Royal Canin) 室內貓", kcal: 3750 },
-                    { name: "皇家 (Royal Canin) 泌尿道配方", kcal: 3870 },
-                    { name: "Orijen (渴望) 鮮雞愛貓", kcal: 4060 },
-                    { name: "Orijen (渴望) 六種魚", kcal: 4060 },
-                    { name: "Real Power (瑞威) 3號海魚", kcal: 4150 },
-                    { name: "Wellness CORE 無穀成貓", kcal: 3977 },
-                    { name: "莫比 (Mobby) 無穀鹿肉", kcal: 3650 },
-                    { name: "紐頓 (Nutram) T22 無穀火雞", kcal: 3820 },
-                    { name: "怪獸部落 98% 鮮肉糧", kcal: 4100 }
+                    { name: "Royal Canin 皇家 - 室內貓", kcal: 3750 },
+                    { name: "Royal Canin 皇家 - 泌尿道配方", kcal: 3870 },
+                    { name: "Orijen 渴望 - 鮮雞愛貓 (高蛋白)", kcal: 4060 },
+                    { name: "Orijen 渴望 - 六種魚", kcal: 4060 },
+                    { name: "Real Power 瑞威 - 3號海魚", kcal: 4150 },
+                    { name: "Wellness CORE - 無穀成貓", kcal: 3977 },
+                    { name: "GO! - 四種肉 (高肉量)", kcal: 4298 },
+                    { name: "NOW! - 鮮肉無穀成貓", kcal: 3784 },
+                    { name: "Farmina 法米納 - 葉酸鴨肉", kcal: 4060 },
+                    { name: "Instinct 原點 - 雞肉無穀", kcal: 4150 },
+                    { name: "Mobby 莫比 - 無穀鹿肉", kcal: 3650 },
+                    { name: "Nutram 紐頓 - T22 無穀火雞", kcal: 3820 },
+                    { name: "怪獸部落 - 98% 鮮肉糧", kcal: 4100 }
                 ]
             }
         };
 
-        // --- Advice Database ---
         const adviceList = {
             dog: [
-                "換飼料請遵守「7日換食法」，每天增加一點新飼料，避免腸胃不適。",
-                "零食熱量不應超過每日總熱量的 10%，記得要從正餐扣除喔！",
-                "夏天散步請避開正中午，柏油路溫度過高可能會燙傷腳底。",
-                "除了乾飼料，記得隨時提供乾淨的飲水。"
+                "狗狗的胃像個無底洞？請依照 BCS 體態評分表，若摸不到肋骨就是太胖囉！",
+                "換飼料要花 7-10 天慢慢替換，避免突然拉肚子。",
+                "葡萄、巧克力、洋蔥是狗狗的劇毒，千萬小心！",
+                "夏天柏油路超燙！請用手背測溫，會燙手就會燙腳。",
+                "每天足夠的散步不只能消耗熱量，還能穩定狗狗情緒喔！"
             ],
             cat: [
-                "貓咪不愛喝水嗎？可以嘗試流動式飲水機，或偶爾搭配主食罐騙水喝。",
-                "貓咪是肉食性動物，請盡量避免碳水化合物過高的零食。",
-                "減重不能太快！貓咪如果餓太久容易有脂肪肝風險，請循序漸進。",
-                "乾飼料開封後建議密封保存，並在一個月內吃完以免受潮氧化。"
+                "貓咪不愛喝水？試試看放幾個水杯在家裡不同角落，或是使用流動飲水機。",
+                "貓咪減肥不能『斷食』！長時間不吃東西容易引發脂肪肝，非常危險。",
+                "乾飼料開封後容易受潮，建議分裝並在一個月內吃完。",
+                "公貓容易有泌尿道問題，若發現頻繁進貓砂盆卻尿不出來，請立刻就醫！",
+                "百合花對貓咪有劇毒，家裡請絕對避免種植。"
             ]
         };
 
         // --- Functions ---
-        
+
         function initData() {
             const type = document.querySelector('input[name="petType"]:checked').value;
             const currentData = data[type];
+            const root = document.documentElement;
+            const emojiDiv = document.getElementById('defaultEmoji');
+            
+            // Reset Image
+            document.getElementById('petImage').style.display = 'none';
+            emojiDiv.style.display = 'flex';
+            emojiDiv.innerText = type === 'dog' ? '🐶' : '🐱';
 
             // Populate Breeds
             const breedSelect = document.getElementById('breedSelect');
-            breedSelect.innerHTML = '<option value="">-- 請選擇品種 (參考體重) --</option>';
-            currentData.breeds.forEach(b => {
+            breedSelect.innerHTML = '<option value="">-- 請選擇品種 --</option>';
+            currentData.breeds.forEach((b, index) => {
                 const opt = document.createElement('option');
-                opt.value = b.weight;
-                opt.text = `${b.name} (約${b.weight}kg)`;
+                opt.value = index; // Use index to locate full object later
+                opt.text = `${b.name}`;
                 breedSelect.appendChild(opt);
             });
 
@@ -444,7 +469,7 @@
                 condSelect.appendChild(opt);
             });
 
-            // Populate Food Brands
+            // Populate Foods
             const foodSelect = document.getElementById('foodBrand');
             foodSelect.innerHTML = '<option value="0">-- 手動輸入或選擇品牌 --</option>';
             currentData.foods.forEach(f => {
@@ -454,16 +479,15 @@
                 foodSelect.appendChild(opt);
             });
 
-            // Change Theme Colors slightly based on pet
-            const root = document.documentElement;
+            // Color Theme Switch
             if (type === 'cat') {
-                root.style.setProperty('--primary', '#a1c4fd'); // Blueish for cats
+                root.style.setProperty('--primary', '#a1c4fd');
                 root.style.setProperty('--primary-dark', '#80aefc');
                 root.style.setProperty('--secondary', '#e2ebf0');
                 root.style.setProperty('--bg', '#f0f7ff');
                 root.style.setProperty('--accent', '#FF9A9E');
             } else {
-                root.style.setProperty('--primary', '#FF9A9E'); // Pinkish for dogs
+                root.style.setProperty('--primary', '#FF9A9E');
                 root.style.setProperty('--primary-dark', '#fa7e83');
                 root.style.setProperty('--secondary', '#FECFEF');
                 root.style.setProperty('--bg', '#FFF0F3');
@@ -471,14 +495,33 @@
             }
         }
 
-        function updateWeightFromBreed() {
-            const weight = document.getElementById('breedSelect').value;
-            if (weight) {
-                document.getElementById('weight').value = weight;
-                // Animation effect
-                const input = document.getElementById('weight');
-                input.style.transform = "scale(1.05)";
-                setTimeout(() => input.style.transform = "scale(1)", 200);
+        function updateBreedInfo() {
+            const type = document.querySelector('input[name="petType"]:checked').value;
+            const index = document.getElementById('breedSelect').value;
+            const imgEl = document.getElementById('petImage');
+            const emojiEl = document.getElementById('defaultEmoji');
+            const weightInput = document.getElementById('weight');
+
+            if (index !== "") {
+                const breedData = data[type].breeds[index];
+                
+                // Update Weight
+                weightInput.value = breedData.weight;
+                weightInput.style.transform = "scale(1.05)";
+                setTimeout(() => weightInput.style.transform = "scale(1)", 200);
+
+                // Update Image
+                if (breedData.img) {
+                    imgEl.src = breedData.img;
+                    imgEl.style.display = 'block';
+                    emojiEl.style.display = 'none';
+                } else {
+                    imgEl.style.display = 'none';
+                    emojiEl.style.display = 'flex';
+                }
+            } else {
+                imgEl.style.display = 'none';
+                emojiEl.style.display = 'flex';
             }
         }
 
@@ -499,32 +542,28 @@
             const type = document.querySelector('input[name="petType"]:checked').value;
 
             if (!weight || !kcal) {
-                alert("請輸入體重與熱量資訊喔！🐾");
+                alert("請確保體重與熱量都已填寫喔！🐾");
                 return;
             }
 
-            // RER Formula
+            // RER = 70 * (Weight ^ 0.75)
             const rer = 70 * Math.pow(weight, 0.75);
-            const der = rer * factor; // Daily Energy Requirement
-            
-            // Daily Grams
+            const der = rer * factor;
             const totalGrams = (der / kcal) * 1000;
 
-            // Update UI
             document.getElementById('result-card').style.display = 'block';
             
-            // Animate Numbers
+            // Count Up Animation
             animateValue('totalAmount', 0, Math.round(totalGrams), 800);
+            
             document.getElementById('meal2').innerText = Math.round(totalGrams / 2);
             document.getElementById('meal3').innerText = Math.round(totalGrams / 3);
-            document.getElementById('totalKcal').innerText = `每日所需熱量：約 ${Math.round(der)} kcal`;
+            document.getElementById('totalKcal').innerText = `(每日所需熱量: 約${Math.round(der)} kcal)`;
 
             // Random Advice
-            const adviceArray = adviceList[type];
-            const randomAdvice = adviceArray[Math.floor(Math.random() * adviceArray.length)];
-            document.getElementById('adviceText').innerText = randomAdvice;
+            const adviceArr = adviceList[type];
+            document.getElementById('adviceText').innerText = adviceArr[Math.floor(Math.random() * adviceArr.length)];
 
-            // Scroll to result
             document.getElementById('result-card').scrollIntoView({behavior: 'smooth'});
         }
 
@@ -542,7 +581,7 @@
             window.requestAnimationFrame(step);
         }
 
-        // Initialize
+        // Init
         initData();
     </script>
 </body>
