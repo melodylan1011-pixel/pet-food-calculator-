@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>毛孩飯飯計算機 🐾</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF9A9E;
+            --secondary: #FECFEF;
+            --accent: #91C4FF;
+            --text: #5D5D5D;
+            --bg: #FFF5F7;
+        }
+
+        body {
+            font-family: 'Quicksand', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(255, 154, 158, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 4px solid white;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .icon-header {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            animation: bounce 2s infinite;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--secondary);
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px var(--secondary);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 154, 158, 0.6);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #result {
+            margin-top: 2rem;
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 20px;
+            display: none; /* 預設隱藏 */
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+            margin: 10px 0;
+        }
+
+        .note {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 1rem;
+            line-height: 1.4;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Toggle Switch for Pet Type */
+        .pet-type-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .radio-label {
+            cursor: pointer;
+            padding: 10px 20px;
+            border: 2px solid var(--secondary);
+            border-radius: 20px;
+            transition: 0.3s;
+            opacity: 0.6;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + .radio-label {
+            background: var(--secondary);
+            border-color: var(--primary);
+            opacity: 1;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <span class="icon-header">🐾</span>
+        <h1>毛孩飯飯計算機</h1>
+
+        <div class="pet-type-selector">
+            <input type="radio" id="dog" name="petType" value="dog" checked onchange="updateOptions()">
+            <label for="dog" class="radio-label">🐶 狗狗</label>
+            
+            <input type="radio" id="cat" name="petType" value="cat" onchange="updateOptions()">
+            <label for="cat" class="radio-label">🐱 貓咪</label>
+        </div>
+
+        <div class="form-group">
+            <label>體重 (kg)</label>
+            <input type="number" id="weight" placeholder="例如: 5.2" step="0.1">
+        </div>
+
+        <div class="form-group">
+            <label>毛孩狀態</label>
+            <select id="condition">
+                <!-- Options will be populated by JS -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>飼料熱量 (kcal/kg)</label>
+            <input type="number" id="calories" placeholder="看飼料袋背面，約3500-4200">
+            <div style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">*通常標示為 代謝能 或 ME (kcal/kg)</div>
+        </div>
+
+        <button onclick="calculate()">計算每日食量 ✨</button>
+
+        <div id="result">
+            <div>建議每日攝取</div>
+            <span class="result-value" id="dailyAmount">0</span>
+            <div>公克 (g)</div>
+            <div class="note" id="calorieNote"></div>
+        </div>
+        
+        <p class="note">⚠️ 僅供參考：實際餵食量請根據毛孩的活動量、體態評分 (BCS) 調整，或諮詢您的獸醫師。</p>
+    </div>
+
+    <script>
+        const dogOptions = [
+            { val: 1.6, text: "成犬 (已結紮)" },
+            { val: 1.8, text: "成犬 (未結紮)" },
+            { val: 3.0, text: "幼犬 (4個月以下)" },
+            { val: 2.0, text: "幼犬 (4個月~成犬)" },
+            { val: 1.0, text: "減重中 / 老年犬" },
+            { val: 1.2, text: "極低活動量" }
+        ];
+
+        const catOptions = [
+            { val: 1.2, text: "成貓 (已結紮/室內)" },
+            { val: 1.4, text: "成貓 (未結紮/活躍)" },
+            { val: 2.5, text: "幼貓" },
+            { val: 0.8, text: "減重中" },
+            { val: 1.6, text: "懷孕/哺乳期" }
+        ];
+
+        function updateOptions() {
+            const isDog = document.getElementById('dog').checked;
+            const select = document.getElementById('condition');
+            const options = isDog ? dogOptions : catOptions;
+            
+            select.innerHTML = '';
+            options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt.val;
+                el.innerText = opt.text;
+                select.appendChild(el);
+            });
+        }
+
+        function calculate() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const multiplier = parseFloat(document.getElementById('condition').value);
+            const foodKcal = parseFloat(document.getElementById('calories').value);
+            
+            if (!weight || !foodKcal) {
+                alert("請輸入完整的體重和飼料熱量喔！🦴");
+                return;
+            }
+
+            // RER Calculation: 70 * (weight ^ 0.75)
+            const rer = 70 * Math.pow(weight, 0.75);
+            
+            // DER Calculation
+            const der = rer * multiplier;
+
+            // Grams of food per day
+            const grams = (der / foodKcal) * 1000;
+
+            // Display
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            // Count up animation
+            let current = 0;
+            const target = Math.round(grams);
+            const duration = 800; // ms
+            const stepTime = 20;
+            const steps = duration / stepTime;
+            const increment = target / steps;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                document.getElementById('dailyAmount').innerText = Math.round(current);
+            }, stepTime);
+
+            document.getElementById('calorieNote').innerText = `每日所需熱量約: ${Math.round(der)} kcal`;
+        }
+
+        // Initialize
+        updateOptions();
+    </script>
+</body>
+</html>
